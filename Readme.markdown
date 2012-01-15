@@ -3,7 +3,7 @@ Backup GitBucket - Backup all your GitHub and BitBucket repositories
 - gets a list of all the repos you have access to
 - creates a local mirror
 
-Better have a local copy in case the internet burn up ;-)
+Better have a local copy in case the Internet burns up ;-)
 
 How to use?
 
