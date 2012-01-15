@@ -1,0 +1,8 @@
+BitBucket:
+  :username: "jbraeuer"
+  :password: "XXXXXXXXXXXXXXXXXX"
+  :directory: "/tmp/bitbucket"
+GitHub:
+  :username: "jbraeuer"
+  :password: "YYYYYYYYYYYYYYYYYY"
+  :directory: "/tmp/github"
