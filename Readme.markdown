@@ -1,14 +1,26 @@
 Backup GitBucket - Backup all your GitHub and BitBucket repositories
 
-- gets a list of all the repos you have access to
-- creates a local mirror
+# Introduction
 
-Better have a local copy in case the Internet burns up ;-)
+backup_gitbucket.rb is a tiny Ruby-Script to backup all your GitHub and/or BitBucket repositories.
+It uses the API to figure out the list of all repos (your's and organizational repos).
 
-How to use?
+Git repositories are cloned in `--mirror` mode. So they will include all remote branches.
 
-Edit config.yaml.sample to match your settings.
-Call `backup-gitbucket <config.yaml>`
+# Why?
+
+I like GitHub's social features and BitBucket's private repos. But having a local backup feels nice too ;-)
+
+# How to use?
+
+- `gem install excon`
+- `gem install json`
+- edit config.yaml.sample to match your settings.
+- `backup-gitbucket <config.yaml>`
+
+# Known issues
+
+The script works fine for me, but it currently lacks proper error-reporting. (Pull requests welcome.)
 
 Enjoy,
 Jens
