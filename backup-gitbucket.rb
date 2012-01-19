@@ -1,5 +1,14 @@
 #! /usr/bin/ruby
 
+#
+# backup-gitbucket.rb - A script to mirror all your git-repos from
+# GitHub.com and BitBucket.org
+#
+# (c) Jens Braeuer, braeuer.jens@googlemail.com
+#
+# Licensed under Apache License, 2.0
+#
+
 require 'rubygems'
 require 'excon'
 require 'pp'
