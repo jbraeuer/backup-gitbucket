@@ -1,3 +1,5 @@
+:global:
+  :dryrun: false
 BitBucket:
   :username: "jbraeuer"
   :password: "XXXXXXXXXXXXXXXXXX"
@@ -6,3 +8,6 @@ GitHub:
   :username: "jbraeuer"
   :password: "YYYYYYYYYYYYYYYYYY"
   :directory: "/tmp/github"
+  :excludes:
+    - NumberFour
+    - ^mcollective

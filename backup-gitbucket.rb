@@ -40,36 +40,53 @@ class GitCloner
 
     def initialize(opts)
         @directory = opts[:directory]
+        @dryrun = opts[:dryrun]
     end
 
     def update_backup(reponame, repodir, ssh_url)
         info "Will update #{reponame} (#{ssh_url}) in #{repodir}"
         Dir.chdir(repodir) do
-            %x[git remote update]
-            raise "Unable to update #{reponame}" unless $?.exitstatus == 0
+            unless @dryrun
+                %x[git remote update]
+                raise "Unable to update #{reponame}" unless $?.exitstatus == 0
+            end
         end
     end
 
     def create_backup(reponame, dir, ssh_url)
         info "Will clone #{reponame} (#{ssh_url}) in #{dir}"
         Dir.chdir(dir) do
-            %x[git clone --mirror "#{ssh_url}"]
-            raise "Unable to clone #{reponame}" unless $?.exitstatus == 0
+            unless @dryrun
+                %x[git clone --mirror "#{ssh_url}"]
+                raise "Unable to clone #{reponame}" unless $?.exitstatus == 0
+            end
         end
     end
 
-    def backup
-        repos = all()
-        repos.each do |name, sub|
-            dir = File.join(@directory, name)
-            FileUtils.mkdir_p dir
+    # Calculates all known git-repository by querying some API.
+    #
+    # Returns: Hash<String, Hash<String, String>>
+    #
+    # Example:
+    # { 'self' : { 'projectA': 'git@github.com/user/projectA',
+    #              'projectB': 'git@github.com/user/projectB' },
+    #   'org1' : { 'orgprojA': 'git@github.com/org1/orgprojA',
+    #              'orgprojB': 'git@github.com/org1/orgprojB' } }
+    def all
+        raise "Implement me in a subclass"
+    end
 
-            sub.each do |reponame, ssh_url|
-                repodir = File.join(dir, "#{reponame}.git")
+    def backup
+        all.each do |division, repos|
+            division_dir = File.join(@directory, division)
+            FileUtils.mkdir_p division_dir
+
+            repos.each do |name, ssh_url|
+                repodir = File.join(division_dir, "#{name}.git")
                 if File.exist? repodir
-                    update_backup(reponame, repodir, ssh_url)
+                    update_backup(name, repodir, ssh_url)
                 else
-                    create_backup(reponame, dir, ssh_url)
+                    create_backup(name, division_dir, ssh_url)
                 end
             end
         end
@@ -85,6 +102,9 @@ class GitHub < GitCloner
         @username = opts[:username]
         @password = opts[:password]
 
+        @excludes = opts[:excludes].map { |r| Regexp.new(r) } if opts.has_key? :excludes
+        @excludes ||= []
+
         @conn = Excon.new("https://api.github.com",
                           :headers => {'Authorization' => basic_auth(@username, @password) })
     end
@@ -94,10 +114,14 @@ class GitHub < GitCloner
         debug "Will list for #{@username} (github.com)"
         all_repos = {}
         all_orgs.each do |org, url|
+            next if @excludes.find { |exclude| exclude.match org }
             all_repos[org] = org_repos = {}
 
             repos = parse(validate(@conn.get(:path => url)))
-            repos.each { |r| org_repos[r["name"]] = r["ssh_url"] }
+            repos.each do |r|
+                next if @excludes.find { |exclude| exclude.match r["name"] }
+                org_repos[r["name"]] = r["ssh_url"]
+            end
         end
         all_repos
     end
@@ -123,6 +147,9 @@ class BitBucket < GitCloner
         @username = opts[:username]
         @password = opts[:password]
 
+        @excludes = opts[:excludes].map { |r| Regexp.new(r) } if opts.has_key? :excludes
+        @excludes ||= []
+
         @conn = Excon.new("https://api.bitbucket.org",
                           :headers => {'Authorization' => basic_auth(@username, @password) })
     end
@@ -134,7 +161,10 @@ class BitBucket < GitCloner
 
         repos = parse(validate(@conn.get(:path => "/1.0/user/repositories/")))
         repos = repos.select { |r| r["scm"] == "git" }
-        repos.each { |r| all_repos["self"][r["slug"]] = "git@bitbucket.org:#{@username}/#{r["slug"]}.git" }
+        repos.each do |r|
+            next if @excludes.find { |exclude| exclude.match r["slug"] }
+            all_repos["self"][r["slug"]] = "git@bitbucket.org:#{@username}/#{r["slug"]}.git"
+        end
 
         all_repos
     end
@@ -142,9 +172,10 @@ end
 
 def main
     config = YAML::load File.open(ARGV[0])
+    global = config.delete(:global)
     config.each do |item, opts|
         klass = Kernel.const_get(item)
-        obj = klass.new(opts)
+        obj = klass.new(opts.merge(global))
         obj.backup
     end
 end
