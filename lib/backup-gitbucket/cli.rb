@@ -9,7 +9,7 @@ module BackupGitBucket
         end
         def main(args=ARGV)
             @config.each do |item, opts|
-                klass = Kernel.const_get(item)
+                klass = Kernel.const_get("BackupGitBucket").const_get(item)
                 obj = klass.new(opts.merge(@global))
                 obj.backup
             end
