@@ -22,6 +22,10 @@ I like GitHub's social features and BitBucket's private repos. But having a loca
 
 The script works fine for me, but it currently lacks proper error-reporting. (Pull requests welcome.)
 
+# Tests?
+
+I currently play with rspec. Execute the tests with `rspec spec --color --format doc`
+
 # What is the License?
 
 Licensed under Apache License Version 2.0.
