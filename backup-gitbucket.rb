@@ -179,18 +179,25 @@ class BitBucket < GitCloner
     end
 end
 
-def main
-    config = YAML::load File.open(ARGV[0])
-    global = config.delete(:global)
-    config.each do |item, opts|
-        klass = Kernel.const_get(item)
-        obj = klass.new(opts.merge(global))
-        obj.backup
+module BackupGitBucket
+    class CLI
+        def initialize(args=ARGV)
+            @args = args
+            @config = YAML::load File.open(@args[0])
+            @global = @config.delete(:global)
+        end
+        def main(args=ARGV)
+            @config.each do |item, opts|
+                klass = Kernel.const_get(item)
+                obj = klass.new(opts.merge(@global))
+                obj.backup
+            end
+        end
     end
 end
 
 begin
-    main
+    BackupGitBucket::CLI.new.main
 rescue => e
     warn e.message
     warn e.backtrace.join("\n")
