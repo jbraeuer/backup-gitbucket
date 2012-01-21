@@ -16,7 +16,7 @@ I like GitHub's social features and BitBucket's private repos. But having a loca
 - `gem install excon`
 - `gem install json`
 - edit config.yaml.sample to match your settings.
-- `backup-gitbucket <config.yaml>`
+- `./bin/backup-gitbucket config.yaml`
 
 # Known issues
 

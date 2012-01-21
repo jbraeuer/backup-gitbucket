@@ -9,7 +9,6 @@
 # Licensed under Apache License, 2.0
 #
 
-require 'rubygems'
 require 'excon'
 require 'pp'
 require 'base64'
@@ -196,9 +195,3 @@ module BackupGitBucket
     end
 end
 
-begin
-    BackupGitBucket::CLI.new.main
-rescue => e
-    warn e.message
-    warn e.backtrace.join("\n")
-end

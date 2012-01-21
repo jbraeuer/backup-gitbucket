@@ -1,0 +1,13 @@
+#! /usr/bin/ruby
+
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'rubygems'
+require 'backup-gitbucket'
+
+begin
+    BackupGitBucket::CLI.new.main
+rescue => e
+    warn e.message
+    warn e.backtrace.join("\n")
+    exit 1
+end
