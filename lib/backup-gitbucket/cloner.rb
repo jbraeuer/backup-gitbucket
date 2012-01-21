@@ -3,10 +3,12 @@ require 'fileutils'
 module BackupGitBucket
     class GitCloner
         include BackupGitBucket::Logging
+        attr_reader :quiet
 
         def initialize(opts)
             @directory = opts[:directory]
             @dryrun = opts[:dryrun]
+            @quiet = opts[:quiet]
         end
 
         def update_backup(reponame, repodir, ssh_url)

@@ -16,7 +16,7 @@ module BackupGitBucket
         end
 
         def all
-            debug "Will list for #{@username} (bitbucket.org)"
+            debug self, "Will list for #{@username} (bitbucket.org)"
 
             all_repos = { "self" => {} }
 

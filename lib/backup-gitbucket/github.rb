@@ -17,7 +17,7 @@ module BackupGitBucket
 
         # Build a hash <organization<name>> -> <git clone url>
         def all
-            debug "Will list for #{@username} (github.com)"
+            debug self, "Will list for #{@username} (github.com)"
             all_repos = {}
             all_orgs.each do |org, url|
                 next if @excludes.find { |exclude| exclude.match org }

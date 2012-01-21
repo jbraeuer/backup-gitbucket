@@ -20,8 +20,8 @@ module BackupGitBucket
     end
 
     module Logging
-        def debug(msg)
-            puts msg
+        def debug(obj, msg)
+            puts msg unless obj.quiet
         end
 
         alias_method :info, :debug
