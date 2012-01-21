@@ -1,5 +1,6 @@
 :global:
   :dryrun: false
+  :quiet: false
 BitBucket:
   :username: "jbraeuer"
   :password: "XXXXXXXXXXXXXXXXXX"
