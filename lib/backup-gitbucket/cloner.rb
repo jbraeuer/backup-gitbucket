@@ -12,7 +12,7 @@ module BackupGitBucket
         end
 
         def update_backup(reponame, repodir, ssh_url)
-            info "Will update #{reponame} (#{ssh_url}) in #{repodir}"
+            info self, "Will update #{reponame} (#{ssh_url}) in #{repodir}"
             Dir.chdir(repodir) do
                 unless @dryrun
                     %x[git remote update]
@@ -22,7 +22,7 @@ module BackupGitBucket
         end
 
         def create_backup(reponame, dir, ssh_url)
-            info "Will clone #{reponame} (#{ssh_url}) in #{dir}"
+            info self, "Will clone #{reponame} (#{ssh_url}) in #{dir}"
             Dir.chdir(dir) do
                 unless @dryrun
                     %x[git clone --mirror "#{ssh_url}"]
@@ -60,5 +60,4 @@ module BackupGitBucket
             end
         end
     end
-
 end
