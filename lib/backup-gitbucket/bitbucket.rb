@@ -24,7 +24,7 @@ module BackupGitBucket
             repos = repos.select { |r| r["scm"] == "git" }
             repos.each do |r|
                 next if @excludes.find { |exclude| exclude.match r["slug"] }
-                all_repos["self"][r["slug"]] = "git@bitbucket.org:#{@username}/#{r["slug"]}.git"
+                all_repos["self"][r["slug"]] = "git@bitbucket.org:#{r["owner"]}/#{r["slug"]}.git"
             end
 
             all_repos
