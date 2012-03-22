@@ -12,9 +12,9 @@ require 'rubygems'
 require 'backup-gitbucket'
 
 begin
-    BackupGitBucket::CLI.new.main
+  BackupGitBucket::CLI.new.main
 rescue => e
-    warn e.message
-    warn e.backtrace.join("\n")
-    exit 1
+  warn e.message
+  warn e.backtrace.join("\n")
+  exit 1
 end
