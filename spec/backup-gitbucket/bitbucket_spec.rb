@@ -31,8 +31,8 @@ module BackupGitBucket
             it "lists all my personal repositories" do
                 bitbucket = BackupGitBucket::BitBucket.new opts
 
-                bitbucket.all["self"]["dotfiles"].should == "git@bitbucket.org:testuser/dotfiles.git"
-                bitbucket.all["self"]["projectA"].should == "git@bitbucket.org:testuser/projectA.git"
+                bitbucket.all["testuser"]["dotfiles"].should == "git@bitbucket.org:testuser/dotfiles.git"
+                bitbucket.all["testuser"]["projectA"].should == "git@bitbucket.org:testuser/projectA.git"
             end
 
             it "excludes matching projects" do
@@ -40,8 +40,8 @@ module BackupGitBucket
 
                 bitbucket = BackupGitBucket::BitBucket.new opts
 
-                bitbucket.all["self"]["dotfiles"].should == "git@bitbucket.org:testuser/dotfiles.git"
-                bitbucket.all["self"].should_not have_key("projectA")
+                bitbucket.all["testuser"]["dotfiles"].should == "git@bitbucket.org:testuser/dotfiles.git"
+                bitbucket.all["testuser"].should_not have_key("projectA")
             end
         end
     end

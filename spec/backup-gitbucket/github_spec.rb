@@ -12,16 +12,19 @@ module BackupGitBucket
             end
             let(:repos) do
                 [ { "ssh_url" => "git@github.com:testuser/projectA.git",
-                    "name" => "projectA" },
+                    "name" => "projectA",
+                    "owner" => { "login" => "testuser" } },
                   { "ssh_url" => "git@github.com:testuser/dotfiles.git",
-                    "name" => "dotfiles" } ]
+                    "name" => "dotfiles",
+                    "owner" => { "login" => "testuser" } } ]
             end
             let(:orgs) do
                 [ { "login" => "ACME" } ]
             end
             let(:org_repos) do
                 [ { "ssh_url" => "git@github.com:ACME/supersecret.git",
-                    "name" => "supersecret" } ]
+                    "name" => "supersecret",
+                    "owner" => { "login" => "ACME" } } ]
             end
             before(:each) do
                 Excon.mock = true
@@ -34,15 +37,15 @@ module BackupGitBucket
             it "should know about personal and organizational repos" do
                 github = BackupGitBucket::GitHub.new opts
 
-                github.all.should have_key("self")
+                github.all.should have_key("testuser")
                 github.all.should have_key("ACME")
             end
 
             it "lists all my personal repositories" do
                 github = BackupGitBucket::GitHub.new opts
 
-                github.all["self"]["dotfiles"].should == "git@github.com:testuser/dotfiles.git"
-                github.all["self"]["projectA"].should == "git@github.com:testuser/projectA.git"
+                github.all["testuser"]["dotfiles"].should == "git@github.com:testuser/dotfiles.git"
+                github.all["testuser"]["projectA"].should == "git@github.com:testuser/projectA.git"
             end
 
             it "lists all my organizational repositories" do
@@ -56,9 +59,9 @@ module BackupGitBucket
 
                 github = BackupGitBucket::GitHub.new opts
 
-                github.all["self"]["dotfiles"].should == "git@github.com:testuser/dotfiles.git"
-                github.all["self"].should_not have_key("projectA")
-                github.all["ACME"].should_not have_key("supersecret")
+                github.all["testuser"]["dotfiles"].should == "git@github.com:testuser/dotfiles.git"
+                github.all["testuser"].should_not have_key("projectA")
+                github.all.should_not have_key("ACME")
             end
 
             it "excludes matching organizations" do
@@ -66,7 +69,7 @@ module BackupGitBucket
 
                 github = BackupGitBucket::GitHub.new opts
                 github.all.should_not have_key("ACME")
-                github.all.should have_key("self")
+                github.all.should have_key("testuser")
             end
         end
     end
