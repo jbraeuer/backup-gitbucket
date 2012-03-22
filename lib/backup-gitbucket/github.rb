@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module BackupGitBucket
     class GitHub < GitCloner
         include BackupGitBucket::HTTPTools
@@ -21,12 +22,16 @@ module BackupGitBucket
             all_repos = {}
             all_orgs.each do |org, url|
                 next if @excludes.find { |exclude| exclude.match org }
-                all_repos[org] = org_repos = {}
 
                 repos = parse(validate(@conn.get(:path => url)))
                 repos.each do |r|
-                    next if @excludes.find { |exclude| exclude.match r["name"] }
-                    org_repos[r["name"]] = r["ssh_url"]
+                    r_login = r["owner"]["login"]
+                    r_name = r["name"]
+
+                    next if @excludes.find { |exclude| exclude.match r_name }
+
+                    all_repos[r_login] ||= {}
+                    all_repos[r_login][r_name] = r["ssh_url"]
                 end
             end
             all_repos
@@ -37,6 +42,7 @@ module BackupGitBucket
         # Build a hash <organization> -> <repository list url>
         def all_orgs
             all_orgs = parse(validate(@conn.get(:path => "/user/orgs")))
+
             all_orgs.inject({ "self" => "/user/repos" }) do |memo,o|
                 memo[o["login"]] = "/orgs/#{o["login"]}/repos"
                 memo
