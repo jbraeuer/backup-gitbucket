@@ -9,7 +9,7 @@ module BackupGitBucket
     end
 
     def validate(resp)
-      raise "Did not get HTTP 200" unless resp.status == 200
+      raise "Did not get HTTP 200 (but a #{resp.status})" unless resp.status == 200
       raise "Pagination not supported" if resp.headers.has_key? "X-Next"
       return resp
     end
