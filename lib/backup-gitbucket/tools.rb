@@ -2,6 +2,18 @@ require 'base64'
 require 'json'
 
 module BackupGitBucket
+
+  class HTTPInstrumentor
+    class << self
+      attr_accessor :events
+
+      def instrument(name, params = {}, &block)
+        puts "#{name} just happened: #{params.inspect}"
+        yield if block_given?
+      end
+    end
+  end
+
   module HTTPTools
     def basic_auth(username, password)
       credentials = Base64.encode64("#{username}:#{password}").strip
