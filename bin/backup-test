@@ -1,0 +1,17 @@
+#! /usr/bin/ruby
+
+require 'rubygems'
+require 'excon'
+require 'pp'
+
+url="https://api.bitbucket.org/1.0/user/repositories"
+auth="Authorization"
+basic="Basic amJyYWV1ZXI6R3JvdFZlY0ltcExvbA=="
+
+system("curl", "-H", "#{auth}: #{basic}", url)
+pp Excon.get("https://api.bitbucket.org/1.0/user/repositories/", :headers => { auth => basic })
+
+#               :ssl_verify_peer => false,
+#               :query => "",
+#               :instrumentor => HTTPInstrumentor,
+#               :body => "",
