@@ -2,6 +2,18 @@ require 'base64'
 require 'json'
 
 module BackupGitBucket
+
+  class HTTPInstrumentor
+    class << self
+      attr_accessor :events
+
+      def instrument(name, params = {}, &block)
+        puts "#{name} just happened: #{params.inspect}"
+        yield if block_given?
+      end
+    end
+  end
+
   module HTTPTools
     def basic_auth(username, password)
       credentials = Base64.encode64("#{username}:#{password}").strip
@@ -9,7 +21,7 @@ module BackupGitBucket
     end
 
     def validate(resp)
-      raise "Did not get HTTP 200" unless resp.status == 200
+      raise "Did not get HTTP 200 (but a #{resp.status})" unless resp.status == 200
       raise "Pagination not supported" if resp.headers.has_key? "X-Next"
       return resp
     end

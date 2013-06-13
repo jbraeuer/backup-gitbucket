@@ -12,6 +12,7 @@ module BackupGitBucket
       @excludes ||= []
 
       @conn = Excon.new("https://api.bitbucket.org",
+#                        :instrumentor => BackupGitBucket::HTTPInstrumentor,
                         :headers => {'Authorization' => basic_auth(@username, @password) })
     end
 
