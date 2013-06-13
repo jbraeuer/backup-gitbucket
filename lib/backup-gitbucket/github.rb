@@ -13,7 +13,10 @@ module BackupGitBucket
       @excludes ||= []
 
       @conn = Excon.new("https://api.github.com",
-                        :headers => {'Authorization' => basic_auth(@username, @password) })
+                        :headers => {
+                          'Authorization' => basic_auth(@username, @password),
+                          'User-Agent' => "backup-gitbucket (User #{@usernname})"
+                        })
     end
 
     # Build a hash <organization<name>> -> <git clone url>
